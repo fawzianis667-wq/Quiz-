@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<title>الأسئلة</title>
+</head>
+
+<body>
+
+<h1>الأسئلة</h1>
+
+<div id="questions"></div>
+
+<script>
+fetch('/questions/question1.md')
+.then(res => res.text())
+.then(data => {
+ document.getElementById("questions").innerText = data;
+});
+</script>
+
+</body>
+</html>

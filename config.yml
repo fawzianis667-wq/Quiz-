@@ -1,0 +1,16 @@
+backend:
+  name: git-gateway
+  branch: main
+
+media_folder: "images"
+public_folder: "/images"
+
+collections:
+  - name: "questions"
+    label: "الأسئلة"
+    folder: "questions"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "السؤال", name: "title", widget: "string" }
+      - { label: "الإجابة", name: "answer", widget: "text" }
