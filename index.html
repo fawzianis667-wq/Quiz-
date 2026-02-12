@@ -1,20 +1,112 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<title>موقع الأسئلة</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<script src="https://unpkg.com/netlify-cms@^2.0.0/dist/netlify-cms.js"></script>
+<title>منصة الاختبارات التعليمية</title>
 
+<style>
+
+body{
+margin:0;
+font-family: Tahoma, Arial;
+background: linear-gradient(135deg,#0f172a,#020617);
+color:white;
+}
+
+/* الهيدر */
+header{
+padding:20px;
+text-align:center;
+font-size:22px;
+font-weight:bold;
+background: rgba(255,255,255,0.05);
+backdrop-filter: blur(10px);
+}
+
+/* المحتوى */
+.container{
+max-width:900px;
+margin:auto;
+padding:40px 20px;
+text-align:center;
+}
+
+.title{
+font-size:34px;
+margin-bottom:10px;
+}
+
+.subtitle{
+opacity:0.8;
+margin-bottom:40px;
+}
+
+/* الكرت */
+.card{
+background: rgba(255,255,255,0.05);
+padding:30px;
+border-radius:20px;
+box-shadow:0 10px 30px rgba(0,0,0,0.4);
+}
+
+/* الزر */
+.btn{
+display:inline-block;
+margin-top:25px;
+padding:15px 35px;
+border-radius:12px;
+background: linear-gradient(45deg,#06b6d4,#3b82f6);
+color:white;
+text-decoration:none;
+font-size:18px;
+transition:0.3s;
+}
+
+.btn:hover{
+transform:scale(1.05);
+}
+
+/* الفوتر */
+footer{
+margin-top:60px;
+padding:20px;
+text-align:center;
+opacity:0.6;
+font-size:14px;
+}
+
+</style>
 </head>
 
 <body>
 
-<h1>أهلاً بك في موقع الاختبارات 🎉</h1>
+<header>
+📚 منصة تقييم الدروس التعليمية
+</header>
 
-<p> الموقع يعمل بنجاح الان</p>
+<div class="container">
 
-<a href="questions.html">الدخول إلى صفحة الأسئلة</a>
+<div class="card">
+
+<h1 class="title">اختبر نفسك بعد كل درس 🎯</h1>
+
+<p class="subtitle">
+بعد مشاهدة الدرس على فيسبوك يمكنك اختبار فهمك عبر اختبارات قصيرة ذكية
+</p>
+
+<a class="btn" href="questions.html">
+🚀 ابدأ الاختبار الآن
+</a>
+
+</div>
+
+</div>
+
+<footer>
+© جميع الحقوق محفوظة - منصتك التعليمية
+</footer>
 
 </body>
 </html>
