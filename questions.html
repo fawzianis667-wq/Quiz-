@@ -262,30 +262,50 @@ window.addEventListener("load",waitForMainExamFinish);
 /* ============================================================ */
 
 </script></body>
-</html>/* ============================= 🏆 FINAL EXAM SYSTEM ADD-ON ============================= */
+</html>/* ============================= 🏆 /* ============================= 🏆 FINAL EXAM SYSTEM ADD-ON ============================= */
 
-// Final Exam Questions (after 15 questions finished) const finalExamQuestions = [ { q: "ما هو أفضل إجراء لحماية حساباتك من الاختراق؟", options: [ "استخدام نفس كلمة المرور لكل المواقع", "تفعيل المصادقة الثنائية", "مشاركة كلمة المرور مع الأصدقاء", "إيقاف التحديثات الأمنية" ], correct: 1 }, { q: "ما هو التصيد الإلكتروني؟", options: [ "هجوم يعتمد على خداع المستخدم للحصول على بياناته", "برنامج حماية", "نوع من التشفير", "نظام تشغيل" ], correct: 0 }, { q: "أفضل تصرف عند استلام رابط مشبوه؟", options: [ "فتحه فوراً", "إرساله للأصدقاء", "تجاهله أو التحقق من المصدر", "تحميله" ], correct: 2 } ];
+// Final Exam Questions (after 15 questions finished) const finalExamQuestions = [ { q: "ما هو أفضل إجراء لحماية حساباتك من الاختراق؟", options: [ "استخدام نفس كلمة المرور لكل المواقع", "تفعيل المصادقة الثنائية", "مشاركة كلمة المرور مع الأصدقاء", "إيقاف التحديثات الأمنية" ], correct: 1 },
+
+{ q: "ما هو التصيد الإلكتروني؟", options: [ "هجوم يعتمد على خداع المستخدم للحصول على بياناته", "برنامج حماية", "نوع من التشفير", "نظام تشغيل" ], correct: 0 },
+
+{ q: "أفضل تصرف عند استلام رابط مشبوه؟", options: [ "فتحه فوراً", "إرساله للأصدقاء", "تجاهله أو التحقق من المصدر", "تحميله" ], correct: 2 } ];
 
 let finalExamScore = 0; let finalExamIndex = 0;
 
-function startFinalExam(){ finalExamScore = 0; finalExamIndex = 0; showFinalExamQuestion(); }
+function startFinalExam(){ finalExamScore = 0; finalExamIndex = 0;
 
-function showFinalExamQuestion(){ if(finalExamIndex >= finalExamQuestions.length){ finishFinalExam(); return; }
+document.getElementById("quiz").innerHTML = ""; document.getElementById("resultBox").style.display = "none"; document.getElementById("badges").innerHTML = "";
+
+drawFinalExamQuestion(); }
+
+function drawFinalExamQuestion(){
+
+if(finalExamIndex >= finalExamQuestions.length){ finishFinalExam(); return; }
+
+const quizDiv = document.getElementById("quiz"); quizDiv.innerHTML = "";
 
 const q = finalExamQuestions[finalExamIndex];
 
-questionElement.innerText = "🏆 الامتحان النهائي: " + q.q; optionsElement.innerHTML = "";
+let card = document.createElement("div"); card.className = "card";
 
-q.options.forEach((opt, index) => { const btn = document.createElement("button"); btn.className = "option-btn"; btn.innerText = opt; btn.onclick = () => { if(index === q.correct) finalExamScore++; finalExamIndex++; showFinalExamQuestion(); }; optionsElement.appendChild(btn); }); }
+let title = document.createElement("h3"); title.innerText = "🏆 الامتحان النهائي: " + q.q; card.appendChild(title);
 
-function finishFinalExam(){ const percent = Math.round((finalExamScore / finalExamQuestions.length) * 100);
+q.options.forEach((opt, index) => { let btn = document.createElement("button"); btn.innerText = opt;
+
+btn.onclick = () => { if(index === q.correct) finalExamScore++; finalExamIndex++; drawFinalExamQuestion(); };
+
+card.appendChild(btn); });
+
+quizDiv.appendChild(card); }
+
+function finishFinalExam(){
+
+const percent = Math.round((finalExamScore / finalExamQuestions.length) * 100);
 
 let message = "";
 
-if(percent < 50){ message = "💪 لا تيأس! البداية دائماً تكون صعبة، استمر في التعلم وستصل للاحتراف."; } else { message = "🚀 أداء رائع! استمر بنفس المستوى وستحقق نجاح أكبر في الأمن السيبراني."; }
+if(percent < 50){ message = "💪 لا تيأس! البداية دائماً تكون صعبة، استمر في التعلم وستصل للاحتراف."; }else{ message = "🚀 أداء رائع! استمر بنفس المستوى وستحقق نجاح أكبر في الأمن السيبراني."; }
 
-questionElement.innerHTML = <h2>📊 النتيجة النهائية</h2> <h3>${percent}%</h3> <p>${message}</p>;
+const result = document.getElementById("resultBox"); result.style.display = "block"; result.innerHTML = 📊 نتيجة الامتحان النهائي: ${percent}%<br><br>${message}; }
 
-optionsElement.innerHTML = ""; }
-
-/* 🔹 ملاحظة مهمة: بعد انتهاء 15 سؤال الأساسي استدعاء الدالة التالية: startFinalExam(); */
+/* 🔹 الاستدعاء التلقائي موجود داخل showResult() بعد انتهاء 15 سؤال */ */
