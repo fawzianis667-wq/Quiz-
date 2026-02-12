@@ -8,47 +8,85 @@
 
 <style>
 
+/* خلفية احترافية */
 body{
 margin:0;
 font-family:Tahoma;
-background:linear-gradient(135deg,#020617,#0f172a);
+background:linear-gradient(135deg,#020617,#0f172a,#020617);
+background-size:400% 400%;
+animation:bgMove 15s infinite alternate;
 color:white;
 }
 
+@keyframes bgMove{
+0%{background-position:left}
+100%{background-position:right}
+}
+
+/* الحاوية */
 .container{
 max-width:800px;
 margin:auto;
 padding:40px 20px;
 }
 
-.questionBox{
-background:rgba(255,255,255,0.05);
-padding:25px;
-border-radius:15px;
-margin-bottom:20px;
+/* عنوان */
+.title{
+text-align:center;
+font-size:30px;
+margin-bottom:30px;
+animation:fadeIn 1s ease;
 }
 
+/* كرت السؤال */
+.card{
+background:rgba(255,255,255,0.05);
+padding:25px;
+border-radius:20px;
+margin-bottom:20px;
+box-shadow:0 15px 40px rgba(0,0,0,0.4);
+animation:fadeUp 0.8s ease;
+}
+
+/* الأزرار */
 button{
 width:100%;
 padding:15px;
 margin-top:10px;
 border:none;
-border-radius:10px;
-background:#0ea5e9;
-color:white;
+border-radius:12px;
 font-size:16px;
 cursor:pointer;
+background:linear-gradient(45deg,#06b6d4,#3b82f6);
+color:white;
+transition:0.3s;
 }
 
 button:hover{
-background:#0284c7;
+transform:scale(1.04);
 }
 
+/* النتيجة */
 .result{
-margin-top:20px;
-font-size:20px;
-font-weight:bold;
+margin-top:30px;
+padding:20px;
+border-radius:15px;
+background:rgba(255,255,255,0.05);
 text-align:center;
+font-size:22px;
+display:none;
+animation:fadeIn 1s ease;
+}
+
+/* انيميشن */
+@keyframes fadeUp{
+from{opacity:0; transform:translateY(30px)}
+to{opacity:1; transform:translateY(0)}
+}
+
+@keyframes fadeIn{
+from{opacity:0}
+to{opacity:1}
 }
 
 </style>
@@ -58,27 +96,116 @@ text-align:center;
 
 <div class="container">
 
-<h2>🧠 اختبار فهم الدرس</h2>
+<h1 class="title">🧠 اختبار فهم الدرس</h1>
 
-<div class="questionBox">
-<p>ما هو الأمن السيبراني؟</p>
+<div id="quiz"></div>
 
-<button onclick="check(true)">حماية الأنظمة والبيانات</button>
-<button onclick="check(false)">زيادة سرعة الإنترنت</button>
-<button onclick="check(false)">تصميم المواقع</button>
-</div>
-
-<div id="result" class="result"></div>
+<div id="resultBox" class="result"></div>
 
 </div>
 
 <script>
 
-function check(answer){
-if(answer){
-document.getElementById("result").innerHTML="✅ إجابة صحيحة";
-}else{
-document.getElementById("result").innerHTML="❌ حاول مرة أخرى";
+/* الأسئلة */
+const questions = [
+{
+q:"ما هو الأمن السيبراني؟",
+answers:[
+"حماية الأنظمة والبيانات",
+"زيادة سرعة الإنترنت",
+"تصميم المواقع"
+],
+correct:0
+},
+
+{
+q:"ما أخطر صلاحية للتطبيقات؟",
+answers:[
+"صلاحية الكاميرا والمايك",
+"صلاحية تغيير اللغة",
+"صلاحية تغيير الخط"
+],
+correct:0
+},
+
+{
+q:"الهندسة الاجتماعية تعني؟",
+answers:[
+"اختراق عبر خداع البشر",
+"تسريع الجهاز",
+"تنظيف الفيروسات"
+],
+correct:0
+}
+
+];
+
+let score = 0;
+
+/* عرض الأسئلة */
+const quizDiv = document.getElementById("quiz");
+
+questions.forEach((item,index)=>{
+
+let card = document.createElement("div");
+card.className="card";
+
+let q = document.createElement("h3");
+q.innerText = (index+1) + " - " + item.q;
+
+card.appendChild(q);
+
+item.answers.forEach((ans,i)=>{
+let btn = document.createElement("button");
+btn.innerText = ans;
+
+btn.onclick = ()=>{
+if(i === item.correct){
+score++;
+}
+card.style.opacity="0.4";
+btn.style.background="#16a34a";
+btn.innerText+=" ✔";
+disableButtons(card);
+checkFinish();
+};
+
+card.appendChild(btn);
+});
+
+quizDiv.appendChild(card);
+
+});
+
+/* تعطيل الأزرار بعد الاختيار */
+function disableButtons(card){
+let buttons = card.querySelectorAll("button");
+buttons.forEach(b=>b.disabled=true);
+}
+
+/* إنهاء الاختبار */
+function checkFinish(){
+let answered = document.querySelectorAll(".card[style]");
+if(answered.length === questions.length){
+
+let result = document.getElementById("resultBox");
+
+let percent = Math.round((score/questions.length)*100);
+
+result.style.display="block";
+
+if(percent >= 80){
+result.innerHTML = "🔥 ممتاز جداً — نتيجتك: "+percent+"%";
+}
+else if(percent >= 50){
+result.innerHTML = "👍 جيد — نتيجتك: "+percent+"%";
+}
+else{
+result.innerHTML = "📚 تحتاج مراجعة الدرس — نتيجتك: "+percent+"%";
+}
+
+window.scrollTo({top:document.body.scrollHeight,behavior:"smooth"});
+
 }
 }
 
