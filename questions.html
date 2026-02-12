@@ -3,7 +3,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>اختبار الأمن السيبراني المتقدم</title><style>
-
 body{
 margin:0;
 font-family:Tahoma;
@@ -11,7 +10,6 @@ background:linear-gradient(135deg,#020617,#020617,#0f172a,#020617);
 background-size:400% 400%;
 animation:bgMove 18s infinite alternate;
 color:white;
-overflow-x:hidden;
 }
 
 @keyframes bgMove{
@@ -38,13 +36,6 @@ font-size:18px;
 color:#38bdf8;
 }
 
-.timer{
-text-align:center;
-font-size:20px;
-margin-bottom:20px;
-color:#22c55e;
-}
-
 .card{
 background:rgba(255,255,255,0.05);
 padding:25px;
@@ -52,22 +43,12 @@ border-radius:20px;
 margin-bottom:25px;
 box-shadow:0 15px 40px rgba(0,0,0,0.5);
 position:relative;
-overflow:hidden;
 }
 
-/* تأثير حماية */
-.card::before{
-content:"";
-position:absolute;
-width:200%;
-height:200%;
-background:radial-gradient(circle,rgba(0,255,200,0.08),transparent 60%);
-animation:shield 6s linear infinite;
-}
-
-@keyframes shield{
-0%{transform:rotate(0deg)}
-100%{transform:rotate(360deg)}
+.timer{
+margin-top:10px;
+font-size:15px;
+color:#22c55e;
 }
 
 button{
@@ -81,12 +62,10 @@ cursor:pointer;
 background:linear-gradient(45deg,#0ea5e9,#2563eb);
 color:white;
 transition:0.3s;
-box-shadow:0 0 10px rgba(0,150,255,0.3);
 }
 
 button:hover{
 transform:scale(1.03);
-box-shadow:0 0 25px rgba(0,150,255,0.7);
 }
 
 .correct{
@@ -125,11 +104,6 @@ font-size:22px;
 display:none;
 }
 
-.badges{
-margin-top:20px;
-font-size:18px;
-}
-
 canvas{
 margin-top:30px;
 background:rgba(255,255,255,0.05);
@@ -137,11 +111,12 @@ border-radius:15px;
 padding:10px;
 }
 
-</style></head><body><div class="container"><h1 class="title">🧠 اختبار الأمن السيبراني المتقدم</h1><div class="pointsBox">🏆 النقاط: <span id="points">0</span></div>
-<div class="timer">⏱ الوقت المتبقي: <span id="time">20</span> ثانية</div><div id="quiz"></div>
+</style></head><body><div class="container">
+<h1 class="title">🧠 اختبار الأمن السيبراني المتقدم</h1>
+<div class="pointsBox">🏆 النقاط: <span id="points">0</span></div>
+<div id="quiz"></div>
 <div id="resultBox" class="result"></div>
-<div class="badges" id="badges"></div><canvas id="chart" height="120"></canvas>
-
+<canvas id="chart" height="120"></canvas>
 </div><script>
 
 const questions = [
@@ -167,39 +142,10 @@ explain:"تعتمد على خداع المستخدم وليس كسر الأنظ�
 
 let score = 0;
 let points = 0;
-let currentTime = 20;
-let timer;
+let answeredCount = 0;
 
 const quizDiv = document.getElementById("quiz");
 const pointsSpan = document.getElementById("points");
-const timeSpan = document.getElementById("time");
-
-startTimer();
-
-function startTimer(){
-clearInterval(timer);
-currentTime = 20;
-timeSpan.innerText = currentTime;
-
-timer = setInterval(()=>{
-currentTime--;
-timeSpan.innerText = currentTime;
-if(currentTime<=0){
-clearInterval(timer);
-autoWrong();
-}
-},1000);
-}
-
-function autoWrong(){
-document.querySelectorAll(".card").forEach(card=>{
-if(!card.dataset.answered){
-card.style.opacity="0.6";
-card.dataset.answered="true";
-}
-});
-checkFinish();
-}
 
 questions.forEach((item,index)=>{
 
@@ -210,9 +156,33 @@ let q = document.createElement("h3");
 q.innerText = (index+1)+" - "+item.q;
 card.appendChild(q);
 
+let timerEl = document.createElement("div");
+timerEl.className="timer";
+card.appendChild(timerEl);
+
 let feedback = document.createElement("div");
 feedback.className="feedback";
 card.appendChild(feedback);
+
+let time = 20;
+timerEl.innerText = "⏱ الوقت: "+time;
+
+let timer = setInterval(()=>{
+time--;
+timerEl.innerText = "⏱ الوقت: "+time;
+
+if(time<=0){
+clearInterval(timer);
+if(!card.dataset.answered){
+card.dataset.answered="true";
+feedback.style.display="block";
+feedback.classList.add("wrongBox");
+feedback.innerHTML="⏱ انتهى الوقت — لم يتم اختيار إجابة";
+answeredCount++;
+checkFinish();
+}
+}
+},1000);
 
 item.answers.forEach((ans,i)=>{
 
@@ -221,26 +191,34 @@ btn.innerText = ans;
 
 btn.onclick = ()=>{
 if(card.dataset.answered) return;
+
 card.dataset.answered="true";
 clearInterval(timer);
+
+let buttons = card.querySelectorAll("button");
 
 if(i === item.correct){
 score++;
 points += 10;
 pointsSpan.innerText = points;
 btn.classList.add("correct");
+
 feedback.style.display="block";
 feedback.classList.add("correctBox");
-feedback.innerHTML = "✅ إجابتك صحيحة<br>📘 السبب: "+item.explain;
+feedback.innerHTML = "✅ إجابة صحيحة<br>📘 السبب: "+item.explain;
+
 }else{
 btn.classList.add("wrong");
-card.querySelectorAll("button")[item.correct].classList.add("correct");
+buttons[item.correct].classList.add("correct");
+
 feedback.style.display="block";
 feedback.classList.add("wrongBox");
-feedback.innerHTML = "❌ إجابتك خاطئة<br>📘 الصحيح لأن: "+item.explain;
+feedback.innerHTML = "❌ إجابة خاطئة<br>📘 الصحيح: "+item.explain;
 }
 
-startTimer();
+buttons.forEach(b=>b.disabled=true);
+
+answeredCount++;
 checkFinish();
 };
 
@@ -248,12 +226,11 @@ card.appendChild(btn);
 });
 
 quizDiv.appendChild(card);
+
 });
 
 function checkFinish(){
-let answered = document.querySelectorAll(".card[data-answered='true']");
-if(answered.length === questions.length){
-clearInterval(timer);
+if(answeredCount === questions.length){
 showResult();
 }
 }
@@ -263,27 +240,9 @@ let result = document.getElementById("resultBox");
 let percent = Math.round((score/questions.length)*100);
 
 result.style.display="block";
-result.innerHTML = "📊 نتيجتك النهائية: "+percent+"%";
+result.innerHTML = "📊 نتيجتك: "+percent+"%";
 
-showBadges(percent);
 drawChart(percent);
-}
-
-function showBadges(percent){
-let badgeBox = document.getElementById("badges");
-
-if(percent >= 90){
-badgeBox.innerHTML = "🥇 شارة خبير الأمن السيبراني";
-}
-else if(percent >= 70){
-badgeBox.innerHTML = "🥈 شارة متقدم";
-}
-else if(percent >= 50){
-badgeBox.innerHTML = "🥉 شارة مبتدئ جيد";
-}
-else{
-badgeBox.innerHTML = "📘 تحتاج تدريب أكثر";
-}
 }
 
 function drawChart(percent){
