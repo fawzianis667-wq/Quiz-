@@ -261,6 +261,31 @@ window.addEventListener("load",waitForMainExamFinish);
 
 /* ============================================================ */
 
+
+
+/* ================= FINAL EXAM RELIABLE AUTO CALL FIX ================= */
+
+// استدعاء الامتحان النهائي مباشرة بعد ظهور نتيجة الاختبار الأساسي
+(function(){
+    const originalShowResult = window.showResult;
+
+    if(typeof originalShowResult === "function"){
+        window.showResult = function(){
+            // تشغيل الدالة الأصلية أولاً
+            originalShowResult.apply(this, arguments);
+
+            // ثم تشغيل الامتحان النهائي تلقائياً بعد ثانيتين
+            setTimeout(()=>{
+                if(typeof startFinalExam === "function"){
+                    startFinalExam();
+                }
+            },2000);
+        }
+    }
+})();
+
+/* ===================================================================== */
+
 </script></body>
 </html>/* ============================= 🏆 /* ============================= 🏆 FINAL EXAM SYSTEM ADD-ON ============================= */
 
