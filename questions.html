@@ -1,8 +1,11 @@
-<!DOCTYPE html><html lang="ar" dir="rtl">
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>اختبار الأمن السيبراني المتقدم</title><style>
+<title>اختبار الأمن السيبراني المتقدم</title>
+
+<style>
 body{
 margin:0;
 font-family:Tahoma;
@@ -134,14 +137,23 @@ background:rgba(255,255,255,0.05);
 border-radius:15px;
 padding:10px;
 }
-</style></head><body><div class="container">
+</style>
+</head>
+
+<body>
+
+<div class="container">
 <h1 class="title">🧠 اختبار الأمن السيبراني المتقدم</h1>
 <div class="pointsBox">🏆 النقاط: <span id="points">0</span></div>
-<div class="timer">⏱ الوقت المتبقي: <span id="time">20</span> ثانية</div><div id="quiz"></div>
+<div class="timer">⏱ الوقت المتبقي: <span id="time">20</span> ثانية</div>
+
+<div id="quiz"></div>
 <div id="resultBox" class="result"></div>
 <div class="badges" id="badges"></div>
 <canvas id="chart" height="120"></canvas>
-</div><script>
+</div>
+
+<script>
 
 const questions = [
 {
@@ -311,5 +323,7 @@ ctx.font = "18px Tahoma";
 ctx.fillText(percent+"%", 50+(percent*3)+10 ,75);
 }
 
-</script></body>
+</script>
+
+</body>
 </html>
