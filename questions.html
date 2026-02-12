@@ -1,16 +1,24 @@
-/* ============================= 🏆 FINAL EXAM SYSTEM ADD-ON ============================= */
+🧠 اختبار الأمن السيبراني الذكي
 
-// Final Exam Questions (after 15 questions finished) const finalExamQuestions = [ { q: "ما هو أفضل إجراء لحماية حساباتك من الاختراق؟", options: [ "استخدام نفس كلمة المرور لكل المواقع", "تفعيل المصادقة الثنائية", "مشاركة كلمة المرور مع الأصدقاء", "إيقاف التحديثات الأمنية" ], correct: 1 }, { q: "ما هو التصيد الإلكتروني؟", options: [ "هجوم يعتمد على خداع المستخدم للحصول على بياناته", "برنامج حماية", "نوع من التشفير", "نظام تشغيل" ], correct: 0 }, { q: "أفضل تصرف عند استلام رابط مشبوه؟", options: [ "فتحه فوراً", "إرساله للأصدقاء", "تجاهله أو التحقق من المصدر", "تحميله" ], correct: 2 } ];
+🏆 النقاط: 0
+
+⏱ الوقت: 20
+
+/* ============================= 🏆 /* ============================= 🏆 FINAL EXAM SYSTEM ADD-ON ============================= */
+
+// Final Exam Questions (after 15 questions finished) const finalExamQuestions = [ { q: "ما هو أفضل إجراء لحماية حساباتك من الاختراق؟", options: [ "استخدام نفس كلمة المرور لكل المواقع", "تفعيل المصادقة الثنائية", "مشاركة كلمة المرور مع الأصدقاء", "إيقاف التحديثات الأمنية" ], correct: 1 },
+
+{ q: "ما هو التصيد الإلكتروني؟", options: [ "هجوم يعتمد على خداع المستخدم للحصول على بياناته", "برنامج حماية", "نوع من التشفير", "نظام تشغيل" ], correct: 0 },
+
+{ q: "أفضل تصرف عند استلام رابط مشبوه؟", options: [ "فتحه فوراً", "إرساله للأصدقاء", "تجاهله أو التحقق من المصدر", "تحميله" ], correct: 2 } ];
 
 let finalExamScore = 0; let finalExamIndex = 0;
 
 function startFinalExam(){ finalExamScore = 0; finalExamIndex = 0;
 
-// تنظيف واجهة الاختبار القديم const quiz = document.getElementById("quiz"); const resultBox = document.getElementById("resultBox"); const badges = document.getElementById("badges");
+document.getElementById("quiz").innerHTML = ""; document.getElementById("resultBox").style.display = "none"; document.getElementById("badges").innerHTML = "";
 
-if(quiz) quiz.innerHTML = ""; if(resultBox) resultBox.style.display = "none"; if(badges) badges.innerHTML = "";
-
-// بدء الامتحان النهائي drawFinalExamQuestion(); }
+drawFinalExamQuestion(); }
 
 function drawFinalExamQuestion(){
 
@@ -26,7 +34,7 @@ let title = document.createElement("h3"); title.innerText = "🏆 الامتحا
 
 q.options.forEach((opt, index) => { let btn = document.createElement("button"); btn.innerText = opt;
 
-btn.onclick = () => { if(index === q.correct){ finalExamScore++; } finalExamIndex++; drawFinalExamQuestion(); };
+btn.onclick = () => { if(index === q.correct) finalExamScore++; finalExamIndex++; drawFinalExamQuestion(); };
 
 card.appendChild(btn); });
 
@@ -40,16 +48,7 @@ let message = "";
 
 if(percent < 50){ message = "💪 لا تيأس! البداية دائماً تكون صعبة، استمر في التعلم وستصل للاحتراف."; }else{ message = "🚀 أداء رائع! استمر بنفس المستوى وستحقق نجاح أكبر في الأمن السيبراني."; }
 
-const result = document.getElementById("resultBox");
+const result = document.getElementById("resultBox"); result.style.display = "block"; result.innerHTML = 📊 نتيجة الامتحان النهائي: ${percent}%<br><br>${message}; }
 
-if(result){ result.style.display = "block"; result.innerHTML = 📊 نتيجة الامتحان النهائي: ${percent}%<br><br>${message}; } }
+/* 🔹 الاستدعاء التلقائي موجود داخل showResult() بعد انتهاء 15 سؤال */ */
 
-/* 🔹 مهم جداً: ضع هذا الاستدعاء داخل نهاية دالة showResult الخاصة بالـ 15 سؤال الأساسي
-
-مثال:
-
-function showResult(){ ... كود النتيجة الأساسي ...
-
-setTimeout(()=>{ startFinalExam(); },2000); }
-
-*/
