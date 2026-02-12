@@ -1,22 +1,87 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<title>الأسئلة</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>اختبار الدرس</title>
+
+<style>
+
+body{
+margin:0;
+font-family:Tahoma;
+background:linear-gradient(135deg,#020617,#0f172a);
+color:white;
+}
+
+.container{
+max-width:800px;
+margin:auto;
+padding:40px 20px;
+}
+
+.questionBox{
+background:rgba(255,255,255,0.05);
+padding:25px;
+border-radius:15px;
+margin-bottom:20px;
+}
+
+button{
+width:100%;
+padding:15px;
+margin-top:10px;
+border:none;
+border-radius:10px;
+background:#0ea5e9;
+color:white;
+font-size:16px;
+cursor:pointer;
+}
+
+button:hover{
+background:#0284c7;
+}
+
+.result{
+margin-top:20px;
+font-size:20px;
+font-weight:bold;
+text-align:center;
+}
+
+</style>
 </head>
 
 <body>
 
-<h1>الأسئلة</h1>
+<div class="container">
 
-<div id="questions"></div>
+<h2>🧠 اختبار فهم الدرس</h2>
+
+<div class="questionBox">
+<p>ما هو الأمن السيبراني؟</p>
+
+<button onclick="check(true)">حماية الأنظمة والبيانات</button>
+<button onclick="check(false)">زيادة سرعة الإنترنت</button>
+<button onclick="check(false)">تصميم المواقع</button>
+</div>
+
+<div id="result" class="result"></div>
+
+</div>
 
 <script>
-fetch('/questions/question1.md')
-.then(res => res.text())
-.then(data => {
- document.getElementById("questions").innerText = data;
-});
+
+function check(answer){
+if(answer){
+document.getElementById("result").innerHTML="✅ إجابة صحيحة";
+}else{
+document.getElementById("result").innerHTML="❌ حاول مرة أخرى";
+}
+}
+
 </script>
 
 </body>
