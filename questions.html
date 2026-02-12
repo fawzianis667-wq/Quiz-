@@ -235,4 +235,30 @@ ctx.fillText(percent+"%",50+(percent*3)+10,75);
 showQuestion();
 
 </script></body>
-</html>
+</html>/* ============================= 🏆 FINAL EXAM SYSTEM ADD-ON ============================= */
+
+// Final Exam Questions (after 15 questions finished) const finalExamQuestions = [ { q: "ما هو أفضل إجراء لحماية حساباتك من الاختراق؟", options: [ "استخدام نفس كلمة المرور لكل المواقع", "تفعيل المصادقة الثنائية", "مشاركة كلمة المرور مع الأصدقاء", "إيقاف التحديثات الأمنية" ], correct: 1 }, { q: "ما هو التصيد الإلكتروني؟", options: [ "هجوم يعتمد على خداع المستخدم للحصول على بياناته", "برنامج حماية", "نوع من التشفير", "نظام تشغيل" ], correct: 0 }, { q: "أفضل تصرف عند استلام رابط مشبوه؟", options: [ "فتحه فوراً", "إرساله للأصدقاء", "تجاهله أو التحقق من المصدر", "تحميله" ], correct: 2 } ];
+
+let finalExamScore = 0; let finalExamIndex = 0;
+
+function startFinalExam(){ finalExamScore = 0; finalExamIndex = 0; showFinalExamQuestion(); }
+
+function showFinalExamQuestion(){ if(finalExamIndex >= finalExamQuestions.length){ finishFinalExam(); return; }
+
+const q = finalExamQuestions[finalExamIndex];
+
+questionElement.innerText = "🏆 الامتحان النهائي: " + q.q; optionsElement.innerHTML = "";
+
+q.options.forEach((opt, index) => { const btn = document.createElement("button"); btn.className = "option-btn"; btn.innerText = opt; btn.onclick = () => { if(index === q.correct) finalExamScore++; finalExamIndex++; showFinalExamQuestion(); }; optionsElement.appendChild(btn); }); }
+
+function finishFinalExam(){ const percent = Math.round((finalExamScore / finalExamQuestions.length) * 100);
+
+let message = "";
+
+if(percent < 50){ message = "💪 لا تيأس! البداية دائماً تكون صعبة، استمر في التعلم وستصل للاحتراف."; } else { message = "🚀 أداء رائع! استمر بنفس المستوى وستحقق نجاح أكبر في الأمن السيبراني."; }
+
+questionElement.innerHTML = <h2>📊 النتيجة النهائية</h2> <h3>${percent}%</h3> <p>${message}</p>;
+
+optionsElement.innerHTML = ""; }
+
+/* 🔹 ملاحظة مهمة: بعد انتهاء 15 سؤال الأساسي استدعاء الدالة التالية: startFinalExam(); */
