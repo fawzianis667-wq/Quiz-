@@ -1,307 +1,16 @@
-<!DOCTYPE html><html lang="ar" dir="rtl">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>اختبار الأمن السيبراني الذكي</title><style>
-body{
-margin:0;
-font-family:Tahoma;
-background:linear-gradient(135deg,#020617,#020617,#0f172a,#020617);
-background-size:400% 400%;
-animation:bgMove 18s infinite alternate;
-color:white;
-}
+/* ============================= 🏆 FINAL EXAM SYSTEM ADD-ON ============================= */
 
-@keyframes bgMove{
-0%{background-position:left}
-100%{background-position:right}
-}
-
-.container{
-max-width:900px;
-margin:auto;
-padding:40px 20px;
-}
-
-.title{text-align:center;font-size:32px;margin-bottom:20px}
-.pointsBox{text-align:center;margin-bottom:20px;font-size:18px;color:#38bdf8}
-.timer{text-align:center;font-size:20px;margin-bottom:20px;color:#22c55e}
-
-.card{
-background:rgba(255,255,255,0.05);
-padding:25px;
-border-radius:20px;
-margin-bottom:25px;
-box-shadow:0 15px 40px rgba(0,0,0,0.5);
-}
-
-button{
-width:100%;
-padding:15px;
-margin-top:12px;
-border:none;
-border-radius:12px;
-font-size:16px;
-cursor:pointer;
-background:linear-gradient(45deg,#0ea5e9,#2563eb);
-color:white;
-transition:0.3s;
-}
-
-button:hover{transform:scale(1.03)}
-.correct{background:linear-gradient(45deg,#16a34a,#22c55e)!important}
-.wrong{background:linear-gradient(45deg,#dc2626,#ef4444)!important}
-
-.feedback{
-margin-top:15px;
-padding:15px;
-border-radius:12px;
-display:none;
-font-size:15px;
-}
-
-.correctBox{background:rgba(0,255,150,0.1);border:1px solid rgba(0,255,150,0.3)}
-.wrongBox{background:rgba(255,0,0,0.1);border:1px solid rgba(255,0,0,0.3)}
-
-.result{
-margin-top:30px;
-padding:20px;
-border-radius:15px;
-background:rgba(255,255,255,0.05);
-text-align:center;
-font-size:22px;
-display:none;
-}
-
-canvas{margin-top:30px;background:rgba(255,255,255,0.05);border-radius:15px;padding:10px}
-</style></head><body>
-<div class="container">
-<h1 class="title">🧠 اختبار الأمن السيبراني الذكي</h1>
-<div class="pointsBox">🏆 النقاط: <span id="points">0</span></div>
-<div class="timer">⏱ الوقت: <span id="time">20</span></div>
-<div id="quiz"></div>
-<div id="resultBox" class="result"></div>
-<canvas id="chart" height="120"></canvas>
-</div><script>
-
-/* ===== بنك أسئلة حسب الصعوبة ===== */
-
-const easy = [
-{q:"ما هو الأمن السيبراني؟",answers:["حماية الأنظمة","زيادة السرعة","تصميم"],correct:0,explain:"لحماية البيانات."},
-{q:"ما هو الفيروس؟",answers:["برنامج ضار","متصفح","موقع"],correct:0,explain:"يضر النظام."},
-{q:"هل كلمة المرور القوية مهمة؟",answers:["نعم","لا","أحيانا"],correct:0,explain:"تحمي الحساب."},
-{q:"هل يجب تحديث النظام؟",answers:["نعم","لا","ليس مهم"],correct:0,explain:"يغلق الثغرات."},
-{q:"هل مشاركة OTP آمن؟",answers:["لا","نعم","عادي"],correct:0,explain:"OTP سري."}
-];
-
-const medium = [
-{q:"ما هي الهندسة الاجتماعية؟",answers:["خداع البشر","تسريع الجهاز","تنظيف الفيروس"],correct:0,explain:"تعتمد على الخداع."},
-{q:"ما هو التصيد؟",answers:["رسائل احتيال","تحديث نظام","نسخ احتياطي"],correct:0,explain:"سرقة بيانات."},
-{q:"ما هي المصادقة الثنائية؟",answers:["طبقة حماية إضافية","تسريع إنترنت","إلغاء كلمة المرور"],correct:0,explain:"حماية إضافية."},
-{q:"VPN يستخدم لـ؟",answers:["تشفير الاتصال","زيادة الصوت","تنظيف الجهاز"],correct:0,explain:"يحمي الاتصال."},
-{q:"ما هو Malware؟",answers:["برمجيات ضارة","مضاد فيروسات","جدار ناري"],correct:0,explain:"برنامج ضار."}
-];
-
-const hard = [
-{q:"ما هو Zero Day؟",answers:["ثغرة غير معروفة","فيروس عادي","جدار ناري"],correct:0,explain:"ثغرة بدون تحديث."},
-{q:"ما هو Ransomware؟",answers:["تشفير الملفات لطلب فدية","تحديث ويندوز","تنظيف الفيروس"],correct:0,explain:"ابتزاز رقمي."},
-{q:"ما هو Hashing؟",answers:["تشفير ثابت","حذف بيانات","نسخ ملفات"],correct:0,explain:"تشفير غير عكسي."},
-{q:"ما هو MITM Attack؟",answers:["اعتراض الاتصال","تنظيف جهاز","تحديث نظام"],correct:0,explain:"تجسس على الاتصال."},
-{q:"ما هو SQL Injection؟",answers:["حقن أوامر قاعدة البيانات","فيروس","تحديث"],correct:0,explain:"اختراق قواعد البيانات."}
-];
-
-/* ===== نظام الذكاء ===== */
-
-let difficulty = "easy";
-let selectedQuestions = [];
-let score = 0;
-let points = 0;
-let currentIndex = 0;
-let timer;
-let time = 20;
-
-const quizDiv = document.getElementById("quiz");
-const timeSpan = document.getElementById("time");
-const pointsSpan = document.getElementById("points");
-
-/* توليد 15 سؤال ذكي */
-function generateQuestions(){
-let pool = [...easy, ...medium, ...hard];
-for(let i=0;i<15;i++){
-selectedQuestions.push(pool[Math.floor(Math.random()*pool.length)]);
-}
-}
-
-generateQuestions();
-
-/* عرض سؤال واحد فقط */
-
-function showQuestion(){
-quizDiv.innerHTML="";
-
-let qObj = selectedQuestions[currentIndex];
-
-let card = document.createElement("div");
-card.className="card";
-
-let q = document.createElement("h3");
-q.innerText = "السؤال "+(currentIndex+1)+" / 15 - "+qObj.q;
-card.appendChild(q);
-
-let feedback = document.createElement("div");
-feedback.className="feedback";
-card.appendChild(feedback);
-
-qObj.answers.forEach((ans,i)=>{
-let btn = document.createElement("button");
-btn.innerText = ans;
-
-btn.onclick = ()=>{
-clearInterval(timer);
-
-if(i===qObj.correct){
-score++;
-points+=10;
-pointsSpan.innerText=points;
-btn.classList.add("correct");
-feedback.style.display="block";
-feedback.classList.add("correctBox");
-feedback.innerHTML="✅ صحيح<br>"+qObj.explain;
-difficulty="hard";
-}else{
-btn.classList.add("wrong");
-feedback.style.display="block";
-feedback.classList.add("wrongBox");
-feedback.innerHTML="❌ خطأ<br>"+qObj.explain;
-difficulty="easy";
-}
-
-setTimeout(nextQuestion,1500);
-};
-
-card.appendChild(btn);
-});
-
-quizDiv.appendChild(card);
-startTimer();
-}
-
-/* المؤقت المتسلسل */
-
-function startTimer(){
-clearInterval(timer);
-time=20;
-timeSpan.innerText=time;
-
- timer=setInterval(()=>{
- time--;
- timeSpan.innerText=time;
- if(time<=0){
- clearInterval(timer);
- nextQuestion();
- }
- },1000);
-}
-
-function nextQuestion(){
-currentIndex++;
-if(currentIndex<15){
-showQuestion();
-}else{
-showResult();
-}
-}
-
-function showResult(){
-quizDiv.innerHTML="";
-let percent=Math.round((score/15)*100);
-let result=document.getElementById("resultBox");
-result.style.display="block";
-result.innerHTML="📊 نتيجتك النهائية: "+percent+"%";
-drawChart(percent);
-}
-
-function drawChart(percent){
-let canvas=document.getElementById("chart");
-let ctx=canvas.getContext("2d");
-ctx.clearRect(0,0,canvas.width,canvas.height);
-ctx.fillStyle="#0ea5e9";
-ctx.fillRect(50,50,percent*3,40);
-ctx.fillStyle="white";
-ctx.font="18px Tahoma";
-ctx.fillText(percent+"%",50+(percent*3)+10,75);
-}
-
-showQuestion();
-
-
-
-/* ================= FINAL EXAM AUTO TRIGGER ================= */
-
-// تشغيل الامتحان النهائي تلقائياً بعد انتهاء 15 سؤال
-function waitForMainExamFinish(){
-    const resultBox = document.getElementById("resultBox");
-    if(!resultBox) return;
-
-    const observer = new MutationObserver(()=>{
-        if(resultBox.style.display === "block"){
-            setTimeout(()=>{
-                if(typeof startFinalExam === "function"){
-                    startFinalExam();
-                }
-            },1500);
-        }
-    });
-
-    observer.observe(resultBox,{attributes:true,attributeFilter:["style"]});
-}
-
-// تشغيل المراقب بعد تحميل الصفحة
-window.addEventListener("load",waitForMainExamFinish);
-
-/* ============================================================ */
-
-
-
-/* ================= FINAL EXAM RELIABLE AUTO CALL FIX ================= */
-
-// استدعاء الامتحان النهائي مباشرة بعد ظهور نتيجة الاختبار الأساسي
-(function(){
-    const originalShowResult = window.showResult;
-
-    if(typeof originalShowResult === "function"){
-        window.showResult = function(){
-            // تشغيل الدالة الأصلية أولاً
-            originalShowResult.apply(this, arguments);
-
-            // ثم تشغيل الامتحان النهائي تلقائياً بعد ثانيتين
-            setTimeout(()=>{
-                if(typeof startFinalExam === "function"){
-                    startFinalExam();
-                }
-            },2000);
-        }
-    }
-})();
-
-/* ===================================================================== */
-
-</script></body>
-</html>/* ============================= 🏆 /* ============================= 🏆 FINAL EXAM SYSTEM ADD-ON ============================= */
-
-// Final Exam Questions (after 15 questions finished) const finalExamQuestions = [ { q: "ما هو أفضل إجراء لحماية حساباتك من الاختراق؟", options: [ "استخدام نفس كلمة المرور لكل المواقع", "تفعيل المصادقة الثنائية", "مشاركة كلمة المرور مع الأصدقاء", "إيقاف التحديثات الأمنية" ], correct: 1 },
-
-{ q: "ما هو التصيد الإلكتروني؟", options: [ "هجوم يعتمد على خداع المستخدم للحصول على بياناته", "برنامج حماية", "نوع من التشفير", "نظام تشغيل" ], correct: 0 },
-
-{ q: "أفضل تصرف عند استلام رابط مشبوه؟", options: [ "فتحه فوراً", "إرساله للأصدقاء", "تجاهله أو التحقق من المصدر", "تحميله" ], correct: 2 } ];
+// Final Exam Questions (after 15 questions finished) const finalExamQuestions = [ { q: "ما هو أفضل إجراء لحماية حساباتك من الاختراق؟", options: [ "استخدام نفس كلمة المرور لكل المواقع", "تفعيل المصادقة الثنائية", "مشاركة كلمة المرور مع الأصدقاء", "إيقاف التحديثات الأمنية" ], correct: 1 }, { q: "ما هو التصيد الإلكتروني؟", options: [ "هجوم يعتمد على خداع المستخدم للحصول على بياناته", "برنامج حماية", "نوع من التشفير", "نظام تشغيل" ], correct: 0 }, { q: "أفضل تصرف عند استلام رابط مشبوه؟", options: [ "فتحه فوراً", "إرساله للأصدقاء", "تجاهله أو التحقق من المصدر", "تحميله" ], correct: 2 } ];
 
 let finalExamScore = 0; let finalExamIndex = 0;
 
 function startFinalExam(){ finalExamScore = 0; finalExamIndex = 0;
 
-document.getElementById("quiz").innerHTML = ""; document.getElementById("resultBox").style.display = "none"; document.getElementById("badges").innerHTML = "";
+// تنظيف واجهة الاختبار القديم const quiz = document.getElementById("quiz"); const resultBox = document.getElementById("resultBox"); const badges = document.getElementById("badges");
 
-drawFinalExamQuestion(); }
+if(quiz) quiz.innerHTML = ""; if(resultBox) resultBox.style.display = "none"; if(badges) badges.innerHTML = "";
+
+// بدء الامتحان النهائي drawFinalExamQuestion(); }
 
 function drawFinalExamQuestion(){
 
@@ -317,7 +26,7 @@ let title = document.createElement("h3"); title.innerText = "🏆 الامتحا
 
 q.options.forEach((opt, index) => { let btn = document.createElement("button"); btn.innerText = opt;
 
-btn.onclick = () => { if(index === q.correct) finalExamScore++; finalExamIndex++; drawFinalExamQuestion(); };
+btn.onclick = () => { if(index === q.correct){ finalExamScore++; } finalExamIndex++; drawFinalExamQuestion(); };
 
 card.appendChild(btn); });
 
@@ -331,6 +40,16 @@ let message = "";
 
 if(percent < 50){ message = "💪 لا تيأس! البداية دائماً تكون صعبة، استمر في التعلم وستصل للاحتراف."; }else{ message = "🚀 أداء رائع! استمر بنفس المستوى وستحقق نجاح أكبر في الأمن السيبراني."; }
 
-const result = document.getElementById("resultBox"); result.style.display = "block"; result.innerHTML = 📊 نتيجة الامتحان النهائي: ${percent}%<br><br>${message}; }
+const result = document.getElementById("resultBox");
 
-/* 🔹 الاستدعاء التلقائي موجود داخل showResult() بعد انتهاء 15 سؤال */ */
+if(result){ result.style.display = "block"; result.innerHTML = 📊 نتيجة الامتحان النهائي: ${percent}%<br><br>${message}; } }
+
+/* 🔹 مهم جداً: ضع هذا الاستدعاء داخل نهاية دالة showResult الخاصة بالـ 15 سؤال الأساسي
+
+مثال:
+
+function showResult(){ ... كود النتيجة الأساسي ...
+
+setTimeout(()=>{ startFinalExam(); },2000); }
+
+*/
