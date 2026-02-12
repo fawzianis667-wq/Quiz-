@@ -234,6 +234,33 @@ ctx.fillText(percent+"%",50+(percent*3)+10,75);
 
 showQuestion();
 
+
+
+/* ================= FINAL EXAM AUTO TRIGGER ================= */
+
+// تشغيل الامتحان النهائي تلقائياً بعد انتهاء 15 سؤال
+function waitForMainExamFinish(){
+    const resultBox = document.getElementById("resultBox");
+    if(!resultBox) return;
+
+    const observer = new MutationObserver(()=>{
+        if(resultBox.style.display === "block"){
+            setTimeout(()=>{
+                if(typeof startFinalExam === "function"){
+                    startFinalExam();
+                }
+            },1500);
+        }
+    });
+
+    observer.observe(resultBox,{attributes:true,attributeFilter:["style"]});
+}
+
+// تشغيل المراقب بعد تحميل الصفحة
+window.addEventListener("load",waitForMainExamFinish);
+
+/* ============================================================ */
+
 </script></body>
 </html>/* ============================= 🏆 FINAL EXAM SYSTEM ADD-ON ============================= */
 
