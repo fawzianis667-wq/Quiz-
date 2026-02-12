@@ -8,7 +8,7 @@
 
 <style>
 
-/* خلفية احترافية */
+/* خلفية */
 body{
 margin:0;
 font-family:Tahoma;
@@ -35,38 +35,70 @@ padding:40px 20px;
 text-align:center;
 font-size:30px;
 margin-bottom:30px;
-animation:fadeIn 1s ease;
 }
 
-/* كرت السؤال */
+/* الكرت */
 .card{
 background:rgba(255,255,255,0.05);
 padding:25px;
 border-radius:20px;
-margin-bottom:20px;
+margin-bottom:25px;
 box-shadow:0 15px 40px rgba(0,0,0,0.4);
-animation:fadeUp 0.8s ease;
 }
 
-/* الأزرار */
+/* أزرار سيبرانية */
 button{
 width:100%;
 padding:15px;
-margin-top:10px;
+margin-top:12px;
 border:none;
 border-radius:12px;
 font-size:16px;
 cursor:pointer;
-background:linear-gradient(45deg,#06b6d4,#3b82f6);
+background:linear-gradient(45deg,#0ea5e9,#2563eb);
 color:white;
 transition:0.3s;
+box-shadow:0 0 10px rgba(0,150,255,0.3);
 }
 
 button:hover{
-transform:scale(1.04);
+transform:scale(1.03);
+box-shadow:0 0 20px rgba(0,150,255,0.6);
 }
 
-/* النتيجة */
+/* صحيح */
+.correct{
+background:linear-gradient(45deg,#16a34a,#22c55e) !important;
+box-shadow:0 0 20px rgba(0,255,120,0.6);
+}
+
+/* خطأ */
+.wrong{
+background:linear-gradient(45deg,#dc2626,#ef4444) !important;
+box-shadow:0 0 20px rgba(255,0,0,0.5);
+}
+
+/* صندوق الشرح */
+.feedback{
+margin-top:15px;
+padding:15px;
+border-radius:12px;
+display:none;
+font-size:15px;
+line-height:1.6;
+}
+
+.feedback.correctBox{
+background:rgba(0,255,150,0.1);
+border:1px solid rgba(0,255,150,0.3);
+}
+
+.feedback.wrongBox{
+background:rgba(255,0,0,0.1);
+border:1px solid rgba(255,0,0,0.3);
+}
+
+/* النتيجة النهائية */
 .result{
 margin-top:30px;
 padding:20px;
@@ -75,18 +107,6 @@ background:rgba(255,255,255,0.05);
 text-align:center;
 font-size:22px;
 display:none;
-animation:fadeIn 1s ease;
-}
-
-/* انيميشن */
-@keyframes fadeUp{
-from{opacity:0; transform:translateY(30px)}
-to{opacity:1; transform:translateY(0)}
-}
-
-@keyframes fadeIn{
-from{opacity:0}
-to{opacity:1}
 }
 
 </style>
@@ -96,17 +116,16 @@ to{opacity:1}
 
 <div class="container">
 
-<h1 class="title">🧠 اختبار فهم الدرس</h1>
+<h1 class="title">🧠 اختبار الأمن السيبراني</h1>
 
 <div id="quiz"></div>
-
 <div id="resultBox" class="result"></div>
 
 </div>
 
 <script>
 
-/* الأسئلة */
+/* الأسئلة + الأسباب */
 const questions = [
 {
 q:"ما هو الأمن السيبراني؟",
@@ -115,7 +134,8 @@ answers:[
 "زيادة سرعة الإنترنت",
 "تصميم المواقع"
 ],
-correct:0
+correct:0,
+explain:"الأمن السيبراني يهدف إلى حماية الأجهزة والشبكات والبيانات من الاختراق والهجمات."
 },
 
 {
@@ -125,7 +145,8 @@ answers:[
 "صلاحية تغيير اللغة",
 "صلاحية تغيير الخط"
 ],
-correct:0
+correct:0,
+explain:"لأن الكاميرا والمايك قد تسمح بالتجسس على المستخدم دون علمه."
 },
 
 {
@@ -135,57 +156,85 @@ answers:[
 "تسريع الجهاز",
 "تنظيف الفيروسات"
 ],
-correct:0
+correct:0,
+explain:"الهندسة الاجتماعية تعتمد على خداع الإنسان للحصول على معلومات سرية."
 }
-
 ];
 
 let score = 0;
 
-/* عرض الأسئلة */
 const quizDiv = document.getElementById("quiz");
 
+/* إنشاء الأسئلة */
 questions.forEach((item,index)=>{
 
 let card = document.createElement("div");
 card.className="card";
 
 let q = document.createElement("h3");
-q.innerText = (index+1) + " - " + item.q;
+q.innerText = (index+1)+" - "+item.q;
 
 card.appendChild(q);
 
+/* صندوق التغذية الراجعة */
+let feedback = document.createElement("div");
+feedback.className="feedback";
+card.appendChild(feedback);
+
+/* الأجوبة */
 item.answers.forEach((ans,i)=>{
+
 let btn = document.createElement("button");
 btn.innerText = ans;
 
 btn.onclick = ()=>{
-if(i === item.correct){
-score++;
-}
-card.style.opacity="0.4";
-btn.style.background="#16a34a";
-btn.innerText+=" ✔";
+
 disableButtons(card);
+
+if(i === item.correct){
+
+score++;
+btn.classList.add("correct");
+
+feedback.style.display="block";
+feedback.classList.add("correctBox");
+feedback.innerHTML = "✅ إجابتك صحيحة<br><br>📘 السبب: "+item.explain;
+
+}else{
+
+btn.classList.add("wrong");
+
+/* تلوين الإجابة الصحيحة */
+card.querySelectorAll("button")[item.correct].classList.add("correct");
+
+feedback.style.display="block";
+feedback.classList.add("wrongBox");
+feedback.innerHTML = "❌ إجابتك خاطئة<br><br>📘 الصحيح لأن: "+item.explain;
+}
+
+card.style.opacity="0.9";
+
 checkFinish();
 };
 
 card.appendChild(btn);
+
 });
 
 quizDiv.appendChild(card);
 
 });
 
-/* تعطيل الأزرار بعد الاختيار */
+/* تعطيل الأزرار */
 function disableButtons(card){
-let buttons = card.querySelectorAll("button");
-buttons.forEach(b=>b.disabled=true);
+card.querySelectorAll("button").forEach(b=>b.disabled=true);
 }
 
-/* إنهاء الاختبار */
+/* النتيجة النهائية */
 function checkFinish(){
-let answered = document.querySelectorAll(".card[style]");
+
+let answered = document.querySelectorAll(".feedback[style*='block']");
+
 if(answered.length === questions.length){
 
 let result = document.getElementById("resultBox");
@@ -195,17 +244,16 @@ let percent = Math.round((score/questions.length)*100);
 result.style.display="block";
 
 if(percent >= 80){
-result.innerHTML = "🔥 ممتاز جداً — نتيجتك: "+percent+"%";
+result.innerHTML = "🔥 ممتاز — نتيجتك: "+percent+"%";
 }
 else if(percent >= 50){
 result.innerHTML = "👍 جيد — نتيجتك: "+percent+"%";
 }
 else{
-result.innerHTML = "📚 تحتاج مراجعة الدرس — نتيجتك: "+percent+"%";
+result.innerHTML = "📚 تحتاج مراجعة — نتيجتك: "+percent+"%";
 }
 
 window.scrollTo({top:document.body.scrollHeight,behavior:"smooth"});
-
 }
 }
 
