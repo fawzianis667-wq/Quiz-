@@ -1,21 +1,17 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<!DOCTYPE html><html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>اختبار الأمن السيبراني المتقدم</title><style>
 
-<title>اختبار الدرس</title>
-
-<style>
-
-/* خلفية */
 body{
 margin:0;
 font-family:Tahoma;
-background:linear-gradient(135deg,#020617,#0f172a,#020617);
+background:linear-gradient(135deg,#020617,#020617,#0f172a,#020617);
 background-size:400% 400%;
-animation:bgMove 15s infinite alternate;
+animation:bgMove 18s infinite alternate;
 color:white;
+overflow-x:hidden;
 }
 
 @keyframes bgMove{
@@ -23,30 +19,57 @@ color:white;
 100%{background-position:right}
 }
 
-/* الحاوية */
 .container{
-max-width:800px;
+max-width:900px;
 margin:auto;
 padding:40px 20px;
 }
 
-/* عنوان */
 .title{
 text-align:center;
-font-size:30px;
-margin-bottom:30px;
+font-size:32px;
+margin-bottom:20px;
 }
 
-/* الكرت */
+.pointsBox{
+text-align:center;
+margin-bottom:20px;
+font-size:18px;
+color:#38bdf8;
+}
+
+.timer{
+text-align:center;
+font-size:20px;
+margin-bottom:20px;
+color:#22c55e;
+}
+
 .card{
 background:rgba(255,255,255,0.05);
 padding:25px;
 border-radius:20px;
 margin-bottom:25px;
-box-shadow:0 15px 40px rgba(0,0,0,0.4);
+box-shadow:0 15px 40px rgba(0,0,0,0.5);
+position:relative;
+overflow:hidden;
 }
 
-/* أزرار سيبرانية */
+/* تأثير حماية */
+.card::before{
+content:"";
+position:absolute;
+width:200%;
+height:200%;
+background:radial-gradient(circle,rgba(0,255,200,0.08),transparent 60%);
+animation:shield 6s linear infinite;
+}
+
+@keyframes shield{
+0%{transform:rotate(0deg)}
+100%{transform:rotate(360deg)}
+}
+
 button{
 width:100%;
 padding:15px;
@@ -63,42 +86,35 @@ box-shadow:0 0 10px rgba(0,150,255,0.3);
 
 button:hover{
 transform:scale(1.03);
-box-shadow:0 0 20px rgba(0,150,255,0.6);
+box-shadow:0 0 25px rgba(0,150,255,0.7);
 }
 
-/* صحيح */
 .correct{
 background:linear-gradient(45deg,#16a34a,#22c55e) !important;
-box-shadow:0 0 20px rgba(0,255,120,0.6);
 }
 
-/* خطأ */
 .wrong{
 background:linear-gradient(45deg,#dc2626,#ef4444) !important;
-box-shadow:0 0 20px rgba(255,0,0,0.5);
 }
 
-/* صندوق الشرح */
 .feedback{
 margin-top:15px;
 padding:15px;
 border-radius:12px;
 display:none;
 font-size:15px;
-line-height:1.6;
 }
 
-.feedback.correctBox{
+.correctBox{
 background:rgba(0,255,150,0.1);
 border:1px solid rgba(0,255,150,0.3);
 }
 
-.feedback.wrongBox{
+.wrongBox{
 background:rgba(255,0,0,0.1);
 border:1px solid rgba(255,0,0,0.3);
 }
 
-/* النتيجة النهائية */
 .result{
 margin-top:30px;
 padding:20px;
@@ -109,63 +125,82 @@ font-size:22px;
 display:none;
 }
 
-</style>
-</head>
+.badges{
+margin-top:20px;
+font-size:18px;
+}
 
-<body>
+canvas{
+margin-top:30px;
+background:rgba(255,255,255,0.05);
+border-radius:15px;
+padding:10px;
+}
 
-<div class="container">
-
-<h1 class="title">🧠 اختبار الأمن السيبراني</h1>
-
-<div id="quiz"></div>
+</style></head><body><div class="container"><h1 class="title">🧠 اختبار الأمن السيبراني المتقدم</h1><div class="pointsBox">🏆 النقاط: <span id="points">0</span></div>
+<div class="timer">⏱ الوقت المتبقي: <span id="time">20</span> ثانية</div><div id="quiz"></div>
 <div id="resultBox" class="result"></div>
+<div class="badges" id="badges"></div><canvas id="chart" height="120"></canvas>
 
-</div>
+</div><script>
 
-<script>
-
-/* الأسئلة + الأسباب */
 const questions = [
 {
 q:"ما هو الأمن السيبراني؟",
-answers:[
-"حماية الأنظمة والبيانات",
-"زيادة سرعة الإنترنت",
-"تصميم المواقع"
-],
+answers:["حماية الأنظمة والبيانات","زيادة سرعة الإنترنت","تصميم المواقع"],
 correct:0,
-explain:"الأمن السيبراني يهدف إلى حماية الأجهزة والشبكات والبيانات من الاختراق والهجمات."
+explain:"الأمن السيبراني يهدف لحماية البيانات والأنظمة من الاختراق."
 },
-
 {
 q:"ما أخطر صلاحية للتطبيقات؟",
-answers:[
-"صلاحية الكاميرا والمايك",
-"صلاحية تغيير اللغة",
-"صلاحية تغيير الخط"
-],
+answers:["صلاحية الكاميرا والمايك","تغيير اللغة","تغيير الخط"],
 correct:0,
-explain:"لأن الكاميرا والمايك قد تسمح بالتجسس على المستخدم دون علمه."
+explain:"قد تسمح الكاميرا والمايك بالتجسس على المستخدم."
 },
-
 {
 q:"الهندسة الاجتماعية تعني؟",
-answers:[
-"اختراق عبر خداع البشر",
-"تسريع الجهاز",
-"تنظيف الفيروسات"
-],
+answers:["خداع البشر للحصول على معلومات","تسريع الجهاز","تنظيف الفيروسات"],
 correct:0,
-explain:"الهندسة الاجتماعية تعتمد على خداع الإنسان للحصول على معلومات سرية."
+explain:"تعتمد على خداع المستخدم وليس كسر الأنظمة."
 }
 ];
 
 let score = 0;
+let points = 0;
+let currentTime = 20;
+let timer;
 
 const quizDiv = document.getElementById("quiz");
+const pointsSpan = document.getElementById("points");
+const timeSpan = document.getElementById("time");
 
-/* إنشاء الأسئلة */
+startTimer();
+
+function startTimer(){
+clearInterval(timer);
+currentTime = 20;
+timeSpan.innerText = currentTime;
+
+timer = setInterval(()=>{
+currentTime--;
+timeSpan.innerText = currentTime;
+if(currentTime<=0){
+clearInterval(timer);
+autoWrong();
+}
+},1000);
+}
+
+function autoWrong(){
+document.querySelectorAll(".card").forEach(card=>{
+if(!card.dataset.answered){
+card.style.opacity="0.6";
+card.dataset.answered="true";
+}
+});
+checkFinish();
+}
+
 questions.forEach((item,index)=>{
 
 let card = document.createElement("div");
@@ -173,91 +208,97 @@ card.className="card";
 
 let q = document.createElement("h3");
 q.innerText = (index+1)+" - "+item.q;
-
 card.appendChild(q);
 
-/* صندوق التغذية الراجعة */
 let feedback = document.createElement("div");
 feedback.className="feedback";
 card.appendChild(feedback);
 
-/* الأجوبة */
 item.answers.forEach((ans,i)=>{
 
 let btn = document.createElement("button");
 btn.innerText = ans;
 
 btn.onclick = ()=>{
-
-disableButtons(card);
+if(card.dataset.answered) return;
+card.dataset.answered="true";
+clearInterval(timer);
 
 if(i === item.correct){
-
 score++;
+points += 10;
+pointsSpan.innerText = points;
 btn.classList.add("correct");
-
 feedback.style.display="block";
 feedback.classList.add("correctBox");
-feedback.innerHTML = "✅ إجابتك صحيحة<br><br>📘 السبب: "+item.explain;
-
+feedback.innerHTML = "✅ إجابتك صحيحة<br>📘 السبب: "+item.explain;
 }else{
-
 btn.classList.add("wrong");
-
-/* تلوين الإجابة الصحيحة */
 card.querySelectorAll("button")[item.correct].classList.add("correct");
-
 feedback.style.display="block";
 feedback.classList.add("wrongBox");
-feedback.innerHTML = "❌ إجابتك خاطئة<br><br>📘 الصحيح لأن: "+item.explain;
+feedback.innerHTML = "❌ إجابتك خاطئة<br>📘 الصحيح لأن: "+item.explain;
 }
 
-card.style.opacity="0.9";
-
+startTimer();
 checkFinish();
 };
 
 card.appendChild(btn);
-
 });
 
 quizDiv.appendChild(card);
-
 });
 
-/* تعطيل الأزرار */
-function disableButtons(card){
-card.querySelectorAll("button").forEach(b=>b.disabled=true);
+function checkFinish(){
+let answered = document.querySelectorAll(".card[data-answered='true']");
+if(answered.length === questions.length){
+clearInterval(timer);
+showResult();
+}
 }
 
-/* النتيجة النهائية */
-function checkFinish(){
-
-let answered = document.querySelectorAll(".feedback[style*='block']");
-
-if(answered.length === questions.length){
-
+function showResult(){
 let result = document.getElementById("resultBox");
-
 let percent = Math.round((score/questions.length)*100);
 
 result.style.display="block";
+result.innerHTML = "📊 نتيجتك النهائية: "+percent+"%";
 
-if(percent >= 80){
-result.innerHTML = "🔥 ممتاز — نتيجتك: "+percent+"%";
+showBadges(percent);
+drawChart(percent);
+}
+
+function showBadges(percent){
+let badgeBox = document.getElementById("badges");
+
+if(percent >= 90){
+badgeBox.innerHTML = "🥇 شارة خبير الأمن السيبراني";
+}
+else if(percent >= 70){
+badgeBox.innerHTML = "🥈 شارة متقدم";
 }
 else if(percent >= 50){
-result.innerHTML = "👍 جيد — نتيجتك: "+percent+"%";
+badgeBox.innerHTML = "🥉 شارة مبتدئ جيد";
 }
 else{
-result.innerHTML = "📚 تحتاج مراجعة — نتيجتك: "+percent+"%";
-}
-
-window.scrollTo({top:document.body.scrollHeight,behavior:"smooth"});
+badgeBox.innerHTML = "📘 تحتاج تدريب أكثر";
 }
 }
 
-</script>
+function drawChart(percent){
+let canvas = document.getElementById("chart");
+let ctx = canvas.getContext("2d");
 
-</body>
+ctx.clearRect(0,0,canvas.width,canvas.height);
+
+ctx.fillStyle = "#0ea5e9";
+ctx.fillRect(50,50,percent*3,40);
+
+ctx.fillStyle = "white";
+ctx.font = "18px Tahoma";
+ctx.fillText(percent+"%", 50+(percent*3)+10 ,75);
+}
+
+</script></body>
 </html>
